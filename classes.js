@@ -30,7 +30,18 @@
 */
 
 //Code Here
-
+class Employee {
+  constructor(first_name, last_name, email, age){
+    this.first_name = first_name;
+    this.last_name = last_name;
+    this.email = email;
+    this.age = age;
+  }
+  makeWidget() {
+    let statement = this.first_name + " " + this.last_name + " " + "Widget"
+    return statement
+  }
+}
 
 ////////// PROBLEM 2 //////////
 
@@ -49,6 +60,21 @@
 
 //Code Here
 
+class Manager extends Employee {
+  constructor(first_name, last_name, email, age, reports=[]) {
+    super(first_name, last_name, email, age);
+    this.reports = reports;
+  }
+  hire(employee){
+    this.reports.push(employee)
+  }
+  fire(employee_index){
+    this.reports.splice(employee_index,employee_index)
+  }
+
+}
+
+let dudels = new Manager("Dudels", "Boberson", "aAaa@a", 25)
 
 ////////// PROBLEM 3 //////////
 
@@ -59,12 +85,12 @@
     - bonus - default 0
 
   When employees are hired or fired, the manager's title should be updated based on the number of reports.
-    0 reports : Not a manager
-    1-3 reports : Barely Manager
-    4-10 reports : Mostly Manager
-    11-50 reports : Manager
-    51-100 reports : Manager Plus
-    101+ reports : Bestest Manager
+    0if (reports === 0) newTitle = Not a manager
+    1-3if (reports === 0) newTitle = Barely Manager
+    4-10if (reports === 0) newTitle = Mostly Manager
+    11-50if (reports === 0) newTitle = Manager
+    51-100if (reports === 0) newTitle = Manager Plus
+    101+if (reports === 0) newTitle = Bestest Manager
 
   Everytime they fire an employee they get $100 added to their bonus.
 
@@ -72,7 +98,43 @@
 */
 
 //Code Here
+class ProgressiveManager extends Manager {
+  constructor(first_name, last_name, email, age, reports=[],
+    title='Not a manager', bonus=0) {
 
+    super(first_name, last_name, email, age);
+    this.reports = reports;
+    this.title = title;
+    this.bonus = bonus;
+  }
+
+  updateTitle() {
+    let newTitle = ""
+
+    let reports = this.reports.length
+
+    if (reports >  100) newTitle = 'Bestest Manager'
+    if (reports <= 100) newTitle = 'Manager Plus'
+    if (reports <= 50 ) newTitle = 'Manager'
+    if (reports <= 10 ) newTitle = 'Mostly Manager'
+    if (reports <= 3  ) newTitle = 'Barely Manager'
+    if (reports <= 0  ) newTitle = 'Not a manager'
+
+    return this.title = newTitle
+  }
+
+  hire(employee){
+    super.hire()
+    this.updateTitle()
+  }
+  fire(employee_index){
+    super.fire()
+    this.updateTitle()
+    this.bonus += 100
+  }
+
+
+}
 
 
 ////////// PROBLEM 4 - Black Diamond //////////
@@ -100,4 +162,53 @@
 
 //Code Here
 
+// class Machine{
+//   constructor(widgets_made_count = 0, wear_and_tear_count = 0, needs_reboot = false){
+//     this.widgets_made_count = widgets_made_count
+//     this.wear_and_tear_count = wear_and_tear_count
+//     this.needs_reboot = needs_reboot 
+//   }
+//   makeWidgets(num){
+//     this.widgets_made_count += num
+//     for (let i =0; i<num; i += 50){
+//       this.wear_and_tear_count += 1
+//     }
+//   }
 
+//   fixMachine(){
+//     this.needs_reboot = true;
+//     console.log("fixMachine()", this.needs_reboot)
+//     return this.needs_reboot = true;
+//   }
+
+//   reboot() {
+//     let func = function() {
+//       this.wear_and_tear_count -= 10;
+//       this.needs_reboot = false;
+//       console.log("called inner func")
+//     }
+//     return func
+//   }
+
+// }
+
+class Machine {
+  constructor() {
+  this.widgets_made_count = 0;
+  this.wear_and_tear_count = 0;
+  this.needs_reboot = false;
+  }
+  makeWidgets(num){
+    this.widgets_made_count += num;
+    this.wear_and_tear_count += (num/50); 
+  }
+  fixMachine(){
+  this.needs_reboot = true;
+  }
+  reboot(){
+    return () => {
+      this.wear_and_tear_count -= 10;
+      this.needs_reboot = false;
+    }
+  }
+}
